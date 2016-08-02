@@ -1,7 +1,7 @@
 /** To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package jmetal.metaheuritic.FDEArevision;
+package jmetal.metaheuritic.FDEAupdated;
 
 /**
  *
@@ -17,6 +17,7 @@ import jmetal.core.Solution;
 import jmetal.core.SolutionSet;
 import jmetal.qualityIndicator.QualityIndicator;
 import jmetal.util.JMException;
+import jmetal.util.Ranking;
 
 /** 
  *   Implementation of NSGA-II.
@@ -28,10 +29,10 @@ import jmetal.util.JMException;
  *     To be presented in: PPSN'08. Dortmund. September 2008.
  */
 
-public class FDEA extends Algorithm {
+public class FDEAgaussian extends Algorithm {
 		
 
-	public FDEA(Problem problem) {
+	public FDEAgaussian(Problem problem) {
 		super (problem) ;
 	} 
 	
@@ -88,7 +89,7 @@ public class FDEA extends Algorithm {
 		//System.exit(0);
 		
 		ClusterMinMaxSampling refPointAlgo=new ClusterMinMaxSampling();
-		MemParamEstimationSigMoid refMembershipFunction=new MemParamEstimationSigMoid();
+		MemParamEstimationGaussian refMembershipFunction=new MemParamEstimationGaussian();
 		
 
 		int GenerationNo=0;
@@ -141,6 +142,56 @@ public class FDEA extends Algorithm {
 			
 			population.clear();
 			
+			Ranking paretoRank=new Ranking(union);
+			
+			SolutionSet tempPopulation=new SolutionSet(2*populationSize);
+			tempPopulation.clear();
+			
+			int index=0;
+			SolutionSet front=paretoRank.getSubfront(index);
+			int remain=populationSize;
+
+			while ((remain > 0) && (remain >= front.size())) {
+				
+				for (int k = 0; k < front.size(); k++) {
+					tempPopulation.add(front.get(k));
+				}
+				
+				remain = remain - front.size();
+
+				index++;
+				if (remain > 0) {
+					front = paretoRank.getSubfront(index);
+				}    
+			} 
+
+			if (remain > 0) {                        
+				
+				for (int k = 0; k < front.size(); k++) {
+					tempPopulation.add(front.get(k));
+				} 
+
+				remain = 0;
+			}   
+			
+			
+			System.out.println("Population Size "+tempPopulation.size());
+			
+			if(tempPopulation.size()==populationSize){
+				population=population.union(tempPopulation);
+				tempPopulation.clear();
+				GenerationNo++;
+				System.out.println("Very unlikely");
+				continue;				
+			}
+			else{
+				union.clear();
+				union = union.union(tempPopulation);
+				tempPopulation.clear();
+				population.clear();
+				
+			}
+			System.out.println(union.size());
 			
 			int numberOfObjectives= union.get(0).numberOfObjectives();
 			
@@ -151,10 +202,7 @@ public class FDEA extends Algorithm {
 			}
 			else if(numberOfObjectives == 3){				
 				refSettings.add(new ReferencePointSettings(numberOfObjectives, 50, 1.00, false));
-			}
-			else if(numberOfObjectives == 4){				
-				refSettings.add(new ReferencePointSettings(numberOfObjectives, 50, 1.00, false));
-			}	
+			}			
 			else if(numberOfObjectives == 5){			
 				refSettings.add(new ReferencePointSettings(numberOfObjectives, 25, 1.00, false));
 			}			
@@ -178,7 +226,7 @@ public class FDEA extends Algorithm {
 				System.exit(0);
 			}
 								
-			refPointAlgo.takeSolution(union, population, populationSize, refSettings, refMembershipFunction);
+			refPointAlgo.takeSolutionGaussian(union, population, populationSize, refSettings, refMembershipFunction);
 
 			if(population.size()!=populationSize){
 				System.out.println("Failure");
@@ -195,12 +243,11 @@ public class FDEA extends Algorithm {
 			}
 			
 			System.out.println(GenerationNo);			
-			/*
-			String path=FDEA_Main_DTLZ.currentPath+Integer.toString(GenerationNo);
-			//String path=FDEA_Main.currentPath+Integer.toString(GenerationNo);
-			System.out.println(path);						
-			population.printObjectivesToFile(path);
-			*/
+			//String path=SidPolarMainDTLZ.currentPath+Integer.toString(GenerationNo);
+			//String path=SidPolarMain.currentPath+Integer.toString(GenerationNo);
+			//System.out.println(path);			
+			//population.printObjectivesToFile(path);
+			
 			
 			
 			GenerationNo++;

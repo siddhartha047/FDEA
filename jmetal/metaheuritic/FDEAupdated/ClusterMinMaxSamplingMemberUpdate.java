@@ -1,16 +1,23 @@
-package jmetal.metaheuritic.FDEArevision;
+package jmetal.metaheuritic.FDEAupdated;
 
+import java.io.BufferedWriter;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Random;
 
+import Jama.Matrix;
+
 import jmetal.core.Solution;
 import jmetal.core.SolutionSet;
 
-public class ClusterMinMaxSampling {
+public class ClusterMinMaxSamplingMemberUpdate {
 	
 	MinMaxSorting sidRefDistanceSort = new MinMaxSorting();
+	//ShiftDensityBasedSorting sidRefDistanceSort = new ShiftDensityBasedSorting();
 
 	
 	public int prevMi(int [] m_i,int currentOb){
@@ -232,7 +239,7 @@ public class ClusterMinMaxSampling {
     	  */
 		
 		
-		MemParamEstimationSigMoid refMemberShipFunction=new MemParamEstimationSigMoid();
+		MemParamEstimationSigMoidMembershipUpdate refMemberShipFunction=new MemParamEstimationSigMoidMembershipUpdate();
 		
     	SolutionSet solutionSet=new SolutionSet(6);
     	StaticSolutionSet.MakeTwoObjectiveSolution(solutionSet);
@@ -241,7 +248,7 @@ public class ClusterMinMaxSampling {
     	solutionSet.printFuzzySolutionSet();
 		
     	
-    	ClusterMinMaxSampling refPointAlgo=new ClusterMinMaxSampling();    	
+    	ClusterMinMaxSamplingMemberUpdate refPointAlgo=new ClusterMinMaxSamplingMemberUpdate();    	
     	
     	////
 		ArrayList<ReferencePoint> refPoints=new ArrayList<ReferencePoint>();	
@@ -280,8 +287,195 @@ public class ClusterMinMaxSampling {
 		
 	}
 	
+	public static void ImpactofReferencePointandFuzzy(){
+		String path="D:\\FDEA2016\\Codes\\abcgenerations\\recompileWFG-DTLZ\\FDEA\\backups\\10real\\2\\0.05\\";
+		
+		MemParamEstimationSigMoidMembershipUpdate refMemberShipFunction=new MemParamEstimationSigMoidMembershipUpdate();
+		int populationSize = 4;
+		
+    	SolutionSet solutionSet=new SolutionSet(populationSize*2);
+    	StaticSolutionSet.MakeTwoObjectiveSolution(solutionSet);
+    	
+    	NormalizeSolutionSetInFuzzy(solutionSet);
+    	
+    	solutionSet.printSolutionSet();
+    	solutionSet.printFuzzySolutionSet();
+    	    	
+    	solutionSet.printObjectivesToFile(path+"2dlinear1_2.pf");
+    	solutionSet.printFuzzySolutionSetToFile(path+"2dlinearfuzzy1_2.pf");
+    	
+    	ClusterMinMaxSamplingMemberUpdate refPointAlgo=new ClusterMinMaxSamplingMemberUpdate();    	
+    	
+		ArrayList<ReferencePoint> refPoints=new ArrayList<ReferencePoint>();			
+	//	refPointAlgo.Experiment(2,1,1.00,refPoints,false);
+		refPoints.add(new ReferencePoint(new double[]{0.5,0.5}));
+				
+		printReferencePointInfile(refPoints,path+"2referencepoints.ref");
+		
+		System.out.println("points\t" + refPoints.size());
+		
+		for(int i=0;i<refPoints.size();i++){
+			refPoints.get(i).printPoint();
+		}
+		///
+		
+		ArrayList<ReferencePoint> activePoints= refPointAlgo.ActiveReferencePoint(refPoints, solutionSet);
+		printReferencePointInfile(activePoints, path+"2activePoints.ref");
+		printReferencePointInfile(activePoints, path+"2reducedPoints.ref");
+		
+		
+		
+		System.out.println("''''''''''''''''''''''''''''''''");
+		
+		for(int i=0;i<activePoints.size();i++){
+			
+			activePoints.get(i).printPoint();
+			System.out.println("--->");
+			activePoints.get(i).makeAndReturnSolutionSet().printSolutionSet();
+			System.out.println("#####");
+			
+		}
+		
+		printClusterPointInfile(activePoints, path+"2clusterpoints.refsol");
+		printClusterFuzzyPointInfile(activePoints, path+"2clusterfuzzypoints.refsol");
+		
+		/////////
+		
+		
+		
+		SolutionSet population = new SolutionSet(populationSize);
+		
+		
+		takeNextGeneration(activePoints,solutionSet,population,refMemberShipFunction,populationSize);
+		
+		printMembershipFunction(path+"2dmembership.func",2);
+		
+		System.out.println("Here");
+		solutionSet.printSolutionSet();
+		printFitnesstoFile(solutionSet,path+"2dfitnessval.sol");
+		System.out.println("Here");
+		
+		population.printSolutionSet();
+		population.printObjectivesToFile(path+"2dlinearsol1_2.pf");
+		
+	}
 	
-	void printReferencePoint(ArrayList<ReferencePoint> activePoints, String Name){
+	static void printMembershipFunction(String path,int obj){
+		try {
+		      /* Open the file */
+		      FileOutputStream fos   = new FileOutputStream(path)     ;
+		      OutputStreamWriter osw = new OutputStreamWriter(fos)    ;
+		      BufferedWriter bw      = new BufferedWriter(osw)        ;
+		                        
+		      for (int i = 0; i < obj; i++) {
+		    	  double mean=MemParamEstimationSigMoidMembershipUpdate.ObjMean[i];
+		    	  double var=MemParamEstimationSigMoidMembershipUpdate.Objvar[i];
+		    	  double alpha=MemParamEstimationSigMoidMembershipUpdate.APos[i];
+		    	  double maxDiff=MemParamEstimationSigMoidMembershipUpdate.maxDiff[i];
+		    	  
+		    	bw.write(String.valueOf(mean)+"\t"+String.valueOf(var)+"\t"+String.valueOf(alpha)+"\t"+maxDiff);		    			    			    			    			    
+		    	bw.newLine();
+		      }
+		      			      
+		      bw.close();
+		    }catch (IOException e) {			      
+		      e.printStackTrace();
+		    }	
+	}
+	
+	static void printFitnesstoFile(SolutionSet solutionsList_,String path){
+		try {
+		      /* Open the file */
+		      FileOutputStream fos   = new FileOutputStream(path)     ;
+		      OutputStreamWriter osw = new OutputStreamWriter(fos)    ;
+		      BufferedWriter bw      = new BufferedWriter(osw)        ;
+		                        
+		      for (int i = 0; i < solutionsList_.size(); i++) {		        
+		    	bw.write(String.valueOf(solutionsList_.get(i).getFitness()));		    			    			    			    			    
+		    	bw.newLine();
+		      }
+		      			      
+		      bw.close();
+		    }catch (IOException e) {			      
+		      e.printStackTrace();
+		    }	
+	}
+	static void printClusterPointInfile(ArrayList<ReferencePoint> solutionsList_,String path){
+		try {
+		      /* Open the file */
+		      FileOutputStream fos   = new FileOutputStream(path)     ;
+		      OutputStreamWriter osw = new OutputStreamWriter(fos)    ;
+		      BufferedWriter bw      = new BufferedWriter(osw)        ;
+		                        
+		      for (int i = 0; i < solutionsList_.size(); i++) {
+		        
+		    	bw.write(solutionsList_.get(i).toString());		    	
+		    	bw.newLine();		    			    	
+		    	SolutionSet solutions=solutionsList_.get(i).getSolutionSet();
+		    	
+		    	for(int j=0;j<solutions.size();j++){
+			        bw.write(solutions.get(j).toString());
+			        bw.newLine();
+		    	}		 
+		    	bw.write("-1 -1");
+		    	bw.newLine();
+		      }
+		      			      
+		      bw.close();
+		    }catch (IOException e) {			      
+		      e.printStackTrace();
+		    }		
+	}
+	
+	static void printClusterFuzzyPointInfile(ArrayList<ReferencePoint> solutionsList_,String path){
+		try {
+		      /* Open the file */
+		      FileOutputStream fos   = new FileOutputStream(path)     ;
+		      OutputStreamWriter osw = new OutputStreamWriter(fos)    ;
+		      BufferedWriter bw      = new BufferedWriter(osw)        ;
+		                        
+		      for (int i = 0; i < solutionsList_.size(); i++) {
+		        
+		    	bw.write(solutionsList_.get(i).toString());
+		    	bw.newLine();		    			    	
+		    	SolutionSet solutions=solutionsList_.get(i).getSolutionSet();
+		    	
+		    	for(int j=0;j<solutions.size();j++){
+			        bw.write(solutions.get(j).toFuzzString());
+			        bw.newLine();
+		    	}		 
+		    	bw.write("-1 -1");
+		    	bw.newLine();
+		      }
+		      			      
+		      bw.close();
+		    }catch (IOException e) {			      
+		      e.printStackTrace();
+		    }		
+	}
+	
+	static void printReferencePointInfile(ArrayList<ReferencePoint> solutionsList_,String path){
+		 
+			    try {
+			      /* Open the file */
+			      FileOutputStream fos   = new FileOutputStream(path)     ;
+			      OutputStreamWriter osw = new OutputStreamWriter(fos)    ;
+			      BufferedWriter bw      = new BufferedWriter(osw)        ;
+			                        
+			      for (int i = 0; i < solutionsList_.size(); i++) {
+			        //if (this.vector[i].getFitness()<1.0) {
+			        bw.write(solutionsList_.get(i).toString());
+			        bw.newLine();
+			        //}
+			      }
+			      			      
+			      bw.close();
+			    }catch (IOException e) {			      
+			      e.printStackTrace();
+			    }		
+	}
+	
+	static void  printReferencePoint(ArrayList<ReferencePoint> activePoints, String Name){
 		
 		System.out.println("#################################");
 		System.out.println("#################################");
@@ -309,9 +503,10 @@ public class ClusterMinMaxSampling {
 	}
 	
 	
-	public void  takeSolution(SolutionSet solutionSet,SolutionSet population, int remain,ArrayList<ReferencePointSettings> refSettings,MemParamEstimationSigMoid refMembershipFunction){
+	public void  takeSolution(SolutionSet solutionSet,SolutionSet population, int remain,ArrayList<ReferencePointSettings> refSettings,MemParamEstimationSigMoidMembershipUpdate refMembershipFunction){
 		
 		NormalizeSolutionSetInFuzzy(solutionSet);
+		
 		
 		
 		ArrayList<ReferencePoint> refPoints=new ArrayList<ReferencePoint>();	
@@ -475,7 +670,7 @@ public class ClusterMinMaxSampling {
 		
 	}
 
-	public static void takeNextGeneration(ArrayList<ReferencePoint> activePoints,SolutionSet solutionSet,SolutionSet population,MemParamEstimationSigMoid refMemberShipFunction,int populationSize) {
+	public static void takeNextGeneration(ArrayList<ReferencePoint> activePoints,SolutionSet solutionSet,SolutionSet population,MemParamEstimationSigMoidMembershipUpdate refMemberShipFunction,int populationSize) {
 
 		refMemberShipFunction.Initialization(solutionSet);
 		
@@ -495,6 +690,8 @@ public class ClusterMinMaxSampling {
 			
 		}
 		
+		
+		
 		int index=0;
 		int activePointLength=activePoints.size();
 		
@@ -502,9 +699,7 @@ public class ClusterMinMaxSampling {
 		int lifetimeExpires=0;
 		
 		while(population.size()<populationSize){
-			
-			
-			
+								
 			
 			ReferencePoint activePoint = activePoints.get(index);
 			SolutionSet activeSolutionSet = activePoint.getSolutionSet();
@@ -542,6 +737,68 @@ public class ClusterMinMaxSampling {
 		/////////////////
 	}
 
+	public static double evaluateValue(double []direction, double []objectives,double []minVector){
+		
+		double value=0;
+		
+		for(int i=0;i<direction.length;i++){
+			value+=(objectives[i]-minVector[i])/direction[i];
+		}
+		
+		return value;
+	}
+	
+	public static double[] computeIntercepts(Solution []extremeSolutions,double []zideal,double []zmax) {
+		int obj=extremeSolutions.length;
+		
+		
+		
+		double intercepts[] = new double[obj];
+
+		double[][] temp = new double[obj][obj];
+
+		for (int i = 0; i < obj; i++) {
+			for (int j = 0; j < obj; j++) {
+				double val = extremeSolutions[i].getObjective(j) - zideal[j];
+				temp[i][j] = val;
+			}
+		}
+
+		Matrix EX = new Matrix(temp);
+
+		if (EX.rank() == EX.getRowDimension()) {
+			double[] u = new double[obj];
+			for (int j = 0; j < obj; j++)
+				u[j] = 1;
+
+			Matrix UM = new Matrix(u, obj);
+
+			Matrix AL = EX.inverse().times(UM);
+
+			int j = 0;
+			for (j = 0; j < obj; j++) {
+
+				double aj = 1.0 / AL.get(j, 0) + zideal[j];
+
+				if ((aj > zideal[j]) && (!Double.isInfinite(aj)) && (!Double.isNaN(aj)))
+					intercepts[j] = aj;
+				else
+					break;
+			}
+			if (j != obj) {
+				for (int k = 0; k < obj; k++)
+					intercepts[k] = zmax[k];
+			}
+
+		} else {
+			for (int k = 0; k < obj; k++)
+				intercepts[k] = zmax[k];
+		}
+		
+		return intercepts;
+		
+	}
+	
 	public static  void NormalizeSolutionSetInFuzzy(SolutionSet solutionSet) {
 		double []min = new double[solutionSet.get(0).numberOfObjectives()];
 		double []max = new double[solutionSet.get(0).numberOfObjectives()];
@@ -563,14 +820,75 @@ public class ClusterMinMaxSampling {
 				if(max[j]<tempObj[j])max[j]=tempObj[j];
 			}
 		}
-		
-		/*for(int i=0;i<min.length;i++){
+		/*		
+		for(int i=0;i<min.length;i++){
 			System.out.printf("%f\t",min[i]);
 		}
 		System.out.println();
 		for(int i=0;i<max.length;i++){
 			System.out.printf("%f\t",max[i]);
 		}*/
+		
+		///before
+		
+		int numberOfObjectives=min.length;
+		
+		
+		//stuff that now i am about to do following NSGAIII er work
+		double [][]directionVector=new double[numberOfObjectives][numberOfObjectives];
+		Solution []extremeSolution=new Solution[numberOfObjectives];
+		double []directionValue=new double[numberOfObjectives];
+		
+		
+		for(int i=0;i<numberOfObjectives;i++){
+			for(int j=0;j<numberOfObjectives;j++){
+				directionVector[i][j]=0.000001;
+			}
+		}
+		
+		for(int i=0;i<numberOfObjectives;i++){
+			directionVector[i][i]=1;
+			directionValue[i]=Double.MAX_VALUE;
+		}
+		
+		
+		
+		for(int i=0;i<solutionSet.size();i++){
+			
+			Solution temp = solutionSet.get(i);
+			double []objectives=temp.get_objectives();
+			
+			for(int dir=0;dir<numberOfObjectives;dir++){
+				double value=evaluateValue(directionVector[dir], objectives, min);				
+				if(value<directionValue[dir]){
+					directionValue[dir]=value;
+					extremeSolution[dir]=temp;
+				}
+			}								
+		}
+		/*
+		System.out.println();
+		
+		for(int i=0;i<extremeSolution.length;i++){
+			for(int dir=0;dir<numberOfObjectives;dir++){				
+				System.out.print(extremeSolution[i].getObjective(dir)+" ");
+			}
+			System.out.println();
+		}
+		*/
+		
+		double []intercepts=computeIntercepts(extremeSolution, min, max);
+		
+		/*
+		for(int i=0;i<numberOfObjectives;i++){
+			System.out.print(intercepts[i]+"\t");
+		}
+		System.out.println();
+		*/
+		
+		//System.exit(0);
+		
+		///before
 		
 		double normalValue=0;
 		
@@ -580,7 +898,8 @@ public class ClusterMinMaxSampling {
 			double totalValue=0;
 			for(int j=0;j<max.length;j++){
 				
-				normalValue= (temp.getObjective(j)-min[j])/(max[j]-min[j]);
+				//normalValue= (temp.getObjective(j)-min[j])/(max[j]-min[j]);
+				normalValue= (temp.getObjective(j)-min[j])/(intercepts[j]-min[j]);
 				totalValue+=normalValue;
 				//normalValue= (temp.getObjective(j))/(max[j]);
 				//temp.setFuzzy_objective_value(normalValue, j);
@@ -595,8 +914,8 @@ public class ClusterMinMaxSampling {
 			}
 			else{
 				for(int j=0;j<max.length;j++){
-					
-					normalValue= (temp.getObjective(j)-min[j])/(max[j]-min[j]);				
+					//normalValue= (temp.getObjective(j)-min[j])/(max[j]-min[j]);
+					normalValue= (temp.getObjective(j)-min[j])/(intercepts[j]-min[j]);				
 					temp.setFuzzy_objective_value(normalValue/totalValue, j);
 				}
 			}

@@ -1,7 +1,7 @@
 /** To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package jmetal.metaheuritic.FDEArevision;
+package jmetal.metaheuritic.FDEAupdated;
 
 /**
  *
@@ -16,10 +16,7 @@ import jmetal.core.Problem;
 import jmetal.core.Solution;
 import jmetal.core.SolutionSet;
 import jmetal.qualityIndicator.QualityIndicator;
-import jmetal.util.Distance;
 import jmetal.util.JMException;
-import jmetal.util.Ranking;
-import jmetal.util.comparators.CrowdingComparator;
 
 /** 
  *   Implementation of NSGA-II.
@@ -31,14 +28,17 @@ import jmetal.util.comparators.CrowdingComparator;
  *     To be presented in: PPSN'08. Dortmund. September 2008.
  */
 
-public class FDEAranking extends Algorithm {
+public class FDEAwithoutReferencePoints extends Algorithm {
 		
 
-	public FDEAranking(Problem problem) {
+	public FDEAwithoutReferencePoints(Problem problem) {
 		super (problem) ;
 	} 
 	
 	public SolutionSet execute() throws JMException, ClassNotFoundException {
+		
+		double lifeTime = 10.00;
+		double decrement  = 0.00;
 		
 		int populationSize;
 		int maxEvaluations;
@@ -56,8 +56,6 @@ public class FDEAranking extends Algorithm {
 		Operator crossoverOperator;
 		Operator selectionOperator;
 
-		Distance distance = new Distance();
-
 		//Read the parameters
 		populationSize = ((Integer) getInputParameter("populationSize")).intValue();
 		maxEvaluations = ((Integer) getInputParameter("maxEvaluations")).intValue();
@@ -65,6 +63,8 @@ public class FDEAranking extends Algorithm {
 
 		//Initialize the variables
 		population = new SolutionSet(populationSize);
+		//population = generate_initpop(populationSize);
+		
 		evaluations = 0;
 
 		requiredEvaluations = 0;
@@ -84,13 +84,16 @@ public class FDEAranking extends Algorithm {
 			population.add(newSolution);
 		} //for       
 		
-		MemParamEstimationSigMoid refmembershipfunction=new MemParamEstimationSigMoid();
-		//MemParamEstimationGaussian refmembershipfunction=new MemParamEstimationGaussian();
+		//population.printSolutionSet();
+		//System.exit(0);
 		
-		// Generations 
-		int generation_no=0;
-		while (evaluations < maxEvaluations) {
+		ClusterMinMaxSampling refPointAlgo=new ClusterMinMaxSampling();
+		MemParamEstimationSigMoid refMembershipFunction=new MemParamEstimationSigMoid();
+		
 
+		int GenerationNo=0;
+		while (evaluations < maxEvaluations) {
+			
 			// Create the offSpring solutionSet      
 			offspringPopulation = new SolutionSet(populationSize);
 			Solution[] parents = new Solution[2];
@@ -99,6 +102,7 @@ public class FDEAranking extends Algorithm {
 					//obtain parents
 					parents[0] = (Solution) selectionOperator.execute(population);
 					parents[1] = (Solution) selectionOperator.execute(population);
+					
 					Solution[] offSpring = (Solution[]) crossoverOperator.execute(parents);
 					mutationOperator.execute(offSpring[0]);
 					mutationOperator.execute(offSpring[1]);
@@ -106,78 +110,101 @@ public class FDEAranking extends Algorithm {
 					problem_.evaluateConstraints(offSpring[0]);
 					problem_.evaluate(offSpring[1]);
 					problem_.evaluateConstraints(offSpring[1]);
+					
+					parents[0].lifeTime = parents[0].lifeTime - decrement;
+					parents[1].lifeTime = parents[1].lifeTime - decrement;
+					offSpring[0].lifeTime = lifeTime;
+					offSpring[1].lifeTime = lifeTime;
+					
+					parents[0].firstSweep = true;
+					parents[1].firstSweep = true;
+					offSpring[0].firstSweep = true;
+					offSpring[1].firstSweep = true;
+					
+					
+					//added this two line
+					offSpring[0].setFitness(0);
+					offSpring[1].setFitness(0);
+					
 					offspringPopulation.add(offSpring[0]);
 					offspringPopulation.add(offSpring[1]);
 					evaluations += 2;
 				} // if                            
 			} // for
 
+			for(int i=0;i<population.size();i++){
+				population.get(i).setFitness(0);
+			}
+			
 			// Create the solutionSet union of solutionSet and offSpring
 			union = ((SolutionSet) population).union(offspringPopulation);
-
-			// Ranking the union
-			FuzzyRankingFDEA ranking = new FuzzyRankingFDEA(union,refmembershipfunction);
-			//FuzzyRankingFDNSGAII ranking = new FuzzyRankingFDNSGAII(union,refmembershipfunction);
-
-			int remain = populationSize;
-			int index = 0;
-			SolutionSet front = null;
-			population.clear();
-
-			// Obtain the next front
-			front = ranking.getSubfront(index);
-
-			while ((remain > 0) && (remain >= front.size())) {
-				//Assign crowding distance to individuals
-				distance.crowdingDistanceAssignment(front, problem_.getNumberOfObjectives());
-				//Add the individuals of this front
-				for (int k = 0; k < front.size(); k++) {
-					population.add(front.get(k));
-				} // for
-
-				//Decrement remain
-				remain = remain - front.size();
-
-				//Obtain the next front
-				index++;
-				if (remain > 0) {
-					front = ranking.getSubfront(index);
-				} // if        
-			} // while
-
-			// Remain is less than front(index).size, insert only the best one
-			if (remain > 0) {  // front contains individuals to insert                        
-				distance.crowdingDistanceAssignment(front, problem_.getNumberOfObjectives());
-				front.sort(new CrowdingComparator());
-				for (int k = 0; k < remain; k++) {
-					population.add(front.get(k));
-				} // for
-
-				remain = 0;
-			} // if                               
-
-			// This piece of code shows how to use the indicator object into the code
-			// of NSGA-II. In particular, it finds the number of evaluations required
-			// by the algorithm to obtain a Pareto front with a hypervolume higher
-			// than the hypervolume of the true Pareto front.
-			if ((indicators != null) &&
-					(requiredEvaluations == 0)) {
-				double HV = indicators.getHypervolume(population);
-				if (HV >= (0.98 * indicators.getTrueParetoFrontHypervolume())) {
-					requiredEvaluations = evaluations;
-				} // if
-			} // if
 			
-			System.out.println("Generation No : "+generation_no);
-			generation_no++;
+			population.clear();
+			
+			
+			int numberOfObjectives= union.get(0).numberOfObjectives();
+			
+			
+			//ArrayList<ReferencePointSettings> refSettings= new ArrayList<ReferencePointSettings>();
+						
+			//refSettings.add(new ReferencePointSettings(numberOfObjectives, 1, 1.00, false));
+														
+			//refPointAlgo.takeSolution(union, population, populationSize, refSettings, refMembershipFunction);
+			
+				
+			refPointAlgo.NormalizeSolutionSetInFuzzy(union);
+			
+			ArrayList<ReferencePoint> activePoints=new ArrayList<ReferencePoint>();
+			double []direction=new double[numberOfObjectives];
+			for(int i=0;i<numberOfObjectives;i++)direction[i]=1;
+			ReferencePoint onePoint=new ReferencePoint(direction);
+			
+			
+			for(int i=0;i<union.size();i++){onePoint.addSolution(union.get(i));}
+			
+			onePoint.makeAndReturnSolutionSet();
+			
+			activePoints.add(onePoint);
+			
+			refPointAlgo.takeNextGeneration(activePoints,union,population,refMembershipFunction,populationSize);
+				
+										
+
+			if(population.size()!=populationSize){
+				System.out.println("Failure");
+				System.exit(0);					
+			}
+
+			
+			if (indicators != null){
+				double GD=indicators.getGD(population);
+		        double IGD=indicators.getIGD(population);
+		        double Spread=indicators.getSpread(population);
+		        double Epsilon=indicators.getEpsilon(population);		        
+		        System.out.println(GD+"\t,\t"+IGD+"\t,\t"+Spread+"\t,\t"+Epsilon);		        		       
+			}
+			
+			System.out.println(GenerationNo);			
+			/*
+			String path=FDEA_Main_DTLZ.currentPath+Integer.toString(GenerationNo);
+			//String path=FDEA_Main.currentPath+Integer.toString(GenerationNo);
+			System.out.println(path);						
+			population.printObjectivesToFile(path);
+			*/
+			
+			
+			GenerationNo++;
+			
+			
 		} // while
 
 		// Return as output parameter the required evaluations
 		setOutputParameter("evaluations", requiredEvaluations);
 
 		// Return the first non-dominated front
-		Ranking ranking = new Ranking(population);
-		return ranking.getSubfront(0);
+		//Ranking ranking = new Ranking(population);
+		//return ranking.getSubfront(0);
+		return population;
 
 	}
 

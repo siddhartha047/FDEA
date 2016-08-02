@@ -28,10 +28,10 @@ import jmetal.util.JMException;
  *     To be presented in: PPSN'08. Dortmund. September 2008.
  */
 
-public class FDEA extends Algorithm {
+public class FDEAwithParetoDom extends Algorithm {
 		
 
-	public FDEA(Problem problem) {
+	public FDEAwithParetoDom(Problem problem) {
 		super (problem) ;
 	} 
 	
@@ -87,8 +87,9 @@ public class FDEA extends Algorithm {
 		//population.printSolutionSet();
 		//System.exit(0);
 		
-		ClusterMinMaxSampling refPointAlgo=new ClusterMinMaxSampling();
-		MemParamEstimationSigMoid refMembershipFunction=new MemParamEstimationSigMoid();
+		ClusterMinMaxSamplingPareto refPointAlgo=new ClusterMinMaxSamplingPareto();
+		//MemParamEstimationSigMoid refMembershipFunction=new MemParamEstimationSigMoid();
+		MemParamEstimationSigMoidPareto refMembershipFunction=new MemParamEstimationSigMoidPareto();
 		
 
 		int GenerationNo=0;
@@ -151,10 +152,7 @@ public class FDEA extends Algorithm {
 			}
 			else if(numberOfObjectives == 3){				
 				refSettings.add(new ReferencePointSettings(numberOfObjectives, 50, 1.00, false));
-			}
-			else if(numberOfObjectives == 4){				
-				refSettings.add(new ReferencePointSettings(numberOfObjectives, 50, 1.00, false));
-			}	
+			}			
 			else if(numberOfObjectives == 5){			
 				refSettings.add(new ReferencePointSettings(numberOfObjectives, 25, 1.00, false));
 			}			
@@ -195,12 +193,12 @@ public class FDEA extends Algorithm {
 			}
 			
 			System.out.println(GenerationNo);			
-			/*
-			String path=FDEA_Main_DTLZ.currentPath+Integer.toString(GenerationNo);
+			
+			//String path=FDEA_Main_DTLZ.currentPath+Integer.toString(GenerationNo);
 			//String path=FDEA_Main.currentPath+Integer.toString(GenerationNo);
-			System.out.println(path);						
-			population.printObjectivesToFile(path);
-			*/
+			//System.out.println(path);						
+			//population.printObjectivesToFile(path);
+			
 			
 			
 			GenerationNo++;

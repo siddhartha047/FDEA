@@ -1,7 +1,7 @@
 /** To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package jmetal.metaheuritic.FDEArevision;
+package jmetal.metaheuritic.FDEAupdated;
 
 /**
  *
@@ -17,6 +17,8 @@ import jmetal.core.Solution;
 import jmetal.core.SolutionSet;
 import jmetal.qualityIndicator.QualityIndicator;
 import jmetal.util.JMException;
+import jmetal.util.Ranking;
+import jmetal.util.comparators.CrowdingComparator;
 
 /** 
  *   Implementation of NSGA-II.
@@ -28,17 +30,24 @@ import jmetal.util.JMException;
  *     To be presented in: PPSN'08. Dortmund. September 2008.
  */
 
-public class FDEAgaussian extends Algorithm {
+public class FDEA extends Algorithm {
 		
 
-	public FDEAgaussian(Problem problem) {
+	public FDEA(Problem problem) {
 		super (problem) ;
 	} 
 	
 	public SolutionSet execute() throws JMException, ClassNotFoundException {
 		
+		//ClusterMinMaxSampling.SimpleExperiment();
+		//ClusterMinMaxSamplingMemberUpdate.ImpactofReferencePointandFuzzy();
+	//	ClusterMinMaxSampling.ImpactofReferencePointandFuzzy();
+	//	System.exit(0);
+		
 		double lifeTime = 10.00;
 		double decrement  = 0.00;
+		
+		
 		
 		int populationSize;
 		int maxEvaluations;
@@ -86,12 +95,16 @@ public class FDEAgaussian extends Algorithm {
 		
 		//population.printSolutionSet();
 		//System.exit(0);
-		
+		//if(true)return population;
+		//ClusterMinMaxSamplingMemberUpdate refPointAlgo=new ClusterMinMaxSamplingMemberUpdate();
+		//MemParamEstimationSigMoidMembershipUpdate refMembershipFunction=new MemParamEstimationSigMoidMembershipUpdate();
 		ClusterMinMaxSampling refPointAlgo=new ClusterMinMaxSampling();
-		MemParamEstimationGaussian refMembershipFunction=new MemParamEstimationGaussian();
+		MemParamEstimationSigMoid refMembershipFunction=new MemParamEstimationSigMoid();
 		
 
 		int GenerationNo=0;
+		int maxGeneration=maxEvaluations/populationSize;
+		
 		while (evaluations < maxEvaluations) {
 			
 			// Create the offSpring solutionSet      
@@ -100,12 +113,19 @@ public class FDEAgaussian extends Algorithm {
 			for (int i = 0; i < (populationSize / 2); i++) {
 				if (evaluations < maxEvaluations) {
 					//obtain parents
-					parents[0] = (Solution) selectionOperator.execute(population);
-					parents[1] = (Solution) selectionOperator.execute(population);
+					//parents[0] = (Solution) selectionOperator.execute(population);
+					//parents[1] = (Solution) selectionOperator.execute(population);
+					
+					parents=(Solution[])selectionOperator.execute(population);
+					
+					
+					
 					
 					Solution[] offSpring = (Solution[]) crossoverOperator.execute(parents);
+					
 					mutationOperator.execute(offSpring[0]);
 					mutationOperator.execute(offSpring[1]);
+					
 					problem_.evaluate(offSpring[0]);
 					problem_.evaluateConstraints(offSpring[0]);
 					problem_.evaluate(offSpring[1]);
@@ -123,6 +143,8 @@ public class FDEAgaussian extends Algorithm {
 					
 					
 					//added this two line
+					parents[0].setFitness(0);
+					parents[1].setFitness(0);
 					offSpring[0].setFitness(0);
 					offSpring[1].setFitness(0);
 					
@@ -141,41 +163,106 @@ public class FDEAgaussian extends Algorithm {
 			
 			population.clear();
 			
+			double genProbability=(double)GenerationNo/(double)maxGeneration;
+			double prob=Math.random();
+			//
+			if(true){
+				System.out.println("Pareto applied");
+			
+				Ranking paretoRank=new Ranking(union);
+				
+				SolutionSet tempPopulation=new SolutionSet(2*populationSize);
+				tempPopulation.clear();
+				
+				int index=0;
+				SolutionSet front=paretoRank.getSubfront(index);
+				int remain=populationSize;
+	
+				while ((remain > 0) && (remain >= front.size())) {
+					
+					for (int k = 0; k < front.size(); k++) {
+						tempPopulation.add(front.get(k));
+					}
+					
+					remain = remain - front.size();
+	
+					index++;
+					if (remain > 0) {
+						front = paretoRank.getSubfront(index);
+					}    
+				} 
+	
+				if (remain > 0) {                        
+					
+					for (int k = 0; k < front.size(); k++) {
+						tempPopulation.add(front.get(k));
+					} 
+	
+					remain = 0;
+				}   
+				
+				
+				System.out.println("Population Size "+tempPopulation.size());
+				
+				if(tempPopulation.size()==populationSize){
+					population=population.union(tempPopulation);
+					tempPopulation.clear();
+					GenerationNo++;
+					System.out.println("Very unlikely");
+					continue;				
+				}
+				else{
+					union.clear();
+					union = union.union(tempPopulation);
+					tempPopulation.clear();
+					population.clear();
+					
+				}
+				System.out.println(union.size());
+			}
 			
 			int numberOfObjectives= union.get(0).numberOfObjectives();
 			
 			ArrayList<ReferencePointSettings> refSettings= new ArrayList<ReferencePointSettings>();
 			
 			if(numberOfObjectives == 2){				
-				refSettings.add(new ReferencePointSettings(numberOfObjectives, 2000, 1.00, false));
+				refSettings.add(new ReferencePointSettings(numberOfObjectives, 10000, 1.00, false));
 			}
 			else if(numberOfObjectives == 3){				
-				refSettings.add(new ReferencePointSettings(numberOfObjectives, 50, 1.00, false));
-			}			
+				refSettings.add(new ReferencePointSettings(numberOfObjectives, 150, 1.00, false));
+			}
+			else if(numberOfObjectives == 4){				
+				refSettings.add(new ReferencePointSettings(numberOfObjectives, 40, 1.00, false));
+			}	
 			else if(numberOfObjectives == 5){			
-				refSettings.add(new ReferencePointSettings(numberOfObjectives, 25, 1.00, false));
+				refSettings.add(new ReferencePointSettings(numberOfObjectives, 30, 1.00, false));
 			}			
 			else if(numberOfObjectives == 7){
 				refSettings.add(new ReferencePointSettings(numberOfObjectives, 13, 1.00, false));			
 			}
 			else if(numberOfObjectives == 10){				
-				refSettings.add(new ReferencePointSettings(numberOfObjectives, 9, 1.00, false));			
+				refSettings.add(new ReferencePointSettings(numberOfObjectives, 9, 1.00, false));
+				
+				
 			}			
 			else if(numberOfObjectives == 12){							
-				refSettings.add(new ReferencePointSettings(numberOfObjectives,7, 1.00, false));							
+				refSettings.add(new ReferencePointSettings(numberOfObjectives,8, 1.00, false));				
 			}			
 			else if(numberOfObjectives == 15){
-				refSettings.add(new ReferencePointSettings(numberOfObjectives, 6, 1.00, false));							
+				refSettings.add(new ReferencePointSettings(numberOfObjectives, 6, 1.00, false));				
 			}			
 			else if(numberOfObjectives == 20){
-				refSettings.add(new ReferencePointSettings(numberOfObjectives, 5, 1.00, false));							
-			}								
+				refSettings.add(new ReferencePointSettings(numberOfObjectives, 5, 1.00, false));								
+			}	
+			else if(numberOfObjectives == 25){
+				refSettings.add(new ReferencePointSettings(numberOfObjectives, 4, 1.00, false));								
+			}	
 			else{
 				System.out.println("Dimension Settings Not Specified");
 				System.exit(0);
 			}
 								
-			refPointAlgo.takeSolutionGaussian(union, population, populationSize, refSettings, refMembershipFunction);
+			refPointAlgo.takeSolution(union, population, populationSize, refSettings, refMembershipFunction);
 
 			if(population.size()!=populationSize){
 				System.out.println("Failure");
@@ -192,9 +279,10 @@ public class FDEAgaussian extends Algorithm {
 			}
 			
 			System.out.println(GenerationNo);			
-			//String path=SidPolarMainDTLZ.currentPath+Integer.toString(GenerationNo);
-			//String path=SidPolarMain.currentPath+Integer.toString(GenerationNo);
-			//System.out.println(path);			
+			
+			//String path=FDEA_Main_DTLZ.currentPath+Integer.toString(GenerationNo);
+			//String path=FDEA_Main.currentPath+Integer.toString(GenerationNo);
+			//System.out.println(path);						
 			//population.printObjectivesToFile(path);
 			
 			

@@ -61,7 +61,12 @@ public class ProblemFactory {
     else if (name.substring(0,name.length()-4).equalsIgnoreCase("CEC2009"))
       base += "cec2009Competition.";    
     else if (name.substring(0,name.length()-5).equalsIgnoreCase("CEC2009"))
-      base += "cec2009Competition.";    
+      base += "cec2009Competition.";
+    
+    else if (name.substring(0,name.length()).equalsIgnoreCase("RecInstanceI"))
+        base += "RectangleProblem.";
+    else if (name.substring(0,name.length()).equalsIgnoreCase("ParetoBoxProblem"))
+        base += "RectangleProblem.";
     
     try {
       Class problemClass = Class.forName(base+name);

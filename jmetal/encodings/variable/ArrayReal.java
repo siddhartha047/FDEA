@@ -67,9 +67,7 @@ public class ArrayReal extends Variable {
 		array_ = new Double[size_];
 
 		for (int i = 0; i < size_ ; i++) {
-			array_[i] = PseudoRandom.randDouble()*(problem_.getUpperLimit(i)-
-					                                   problem_.getLowerLimit(i))+
-					                                   problem_.getLowerLimit(i);
+			array_[i] = PseudoRandom.randDouble()*(problem_.getUpperLimit(i)-problem_.getLowerLimit(i))+problem_.getLowerLimit(i);
 		} // for
 	} // Constructor
 

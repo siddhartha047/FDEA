@@ -243,6 +243,30 @@ public class SolutionSet implements Serializable {
     }
   } // printObjectivesToFile
   
+  
+  
+  public void printFuzzySolutionSetToFile(String path){
+	    try {
+	      /* Open the file */
+	      FileOutputStream fos   = new FileOutputStream(path)     ;
+	      OutputStreamWriter osw = new OutputStreamWriter(fos)    ;
+	      BufferedWriter bw      = new BufferedWriter(osw)        ;
+	                        
+	      for (int i = 0; i < solutionsList_.size(); i++) {
+	        //if (this.vector[i].getFitness()<1.0) {
+	        bw.write(solutionsList_.get(i).toFuzzString());
+	        bw.newLine();
+	        //}
+	      }
+	      
+	      /* Close the file */
+	      bw.close();
+	    }catch (IOException e) {
+	      Configuration.logger_.severe("Error acceding to the file");
+	      e.printStackTrace();
+	    }
+	  } // printObjectivesToFile
+  
   public void printObjectivesToFile(String path,boolean printFitness){
 	    try {
 	      /* Open the file */
@@ -392,7 +416,7 @@ public class SolutionSet implements Serializable {
 			System.out.print(objective[i]+"\t");
 		}
 		
-		System.out.print("\tfitness: "+solution.getFitness());
+		System.out.printf("\tfitness: %f",solution.getFitness());
 		System.out.println("\tCrowd: "+solution.getCrowdingDistance());
 	}
 

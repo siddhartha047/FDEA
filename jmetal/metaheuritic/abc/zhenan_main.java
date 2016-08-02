@@ -58,7 +58,7 @@ public class zhenan_main {
                                   ClassNotFoundException {
 	  
 	  
-	int []dimArr={2,3,5,7, 10,12,15,20};
+	int []dimArr={25};
 	int []wfgno={1,2,3,4,5,6,7,8,9};
 	//double []seedar={.5};
 	
@@ -114,6 +114,7 @@ public class zhenan_main {
 		else if(M==12)populationSize=160;
 		else if(M==15)populationSize=240;
 		else if(M==20)populationSize=212;
+		else if(M==25)populationSize=328;
 		
 		else System.exit(0);
 				

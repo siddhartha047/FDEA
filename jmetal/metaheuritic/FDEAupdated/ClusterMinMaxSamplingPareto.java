@@ -1,4 +1,4 @@
-package jmetal.metaheuritic.FDEArevision;
+package jmetal.metaheuritic.FDEAupdated;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -8,7 +8,7 @@ import java.util.Random;
 import jmetal.core.Solution;
 import jmetal.core.SolutionSet;
 
-public class ClusterMinMaxSampling {
+public class ClusterMinMaxSamplingPareto {
 	
 	MinMaxSorting sidRefDistanceSort = new MinMaxSorting();
 
@@ -232,7 +232,7 @@ public class ClusterMinMaxSampling {
     	  */
 		
 		
-		MemParamEstimationSigMoid refMemberShipFunction=new MemParamEstimationSigMoid();
+		MemParamEstimationSigMoidPareto refMemberShipFunction=new MemParamEstimationSigMoidPareto();
 		
     	SolutionSet solutionSet=new SolutionSet(6);
     	StaticSolutionSet.MakeTwoObjectiveSolution(solutionSet);
@@ -241,7 +241,7 @@ public class ClusterMinMaxSampling {
     	solutionSet.printFuzzySolutionSet();
 		
     	
-    	ClusterMinMaxSampling refPointAlgo=new ClusterMinMaxSampling();    	
+    	ClusterMinMaxSamplingPareto refPointAlgo=new ClusterMinMaxSamplingPareto();    	
     	
     	////
 		ArrayList<ReferencePoint> refPoints=new ArrayList<ReferencePoint>();	
@@ -309,7 +309,7 @@ public class ClusterMinMaxSampling {
 	}
 	
 	
-	public void  takeSolution(SolutionSet solutionSet,SolutionSet population, int remain,ArrayList<ReferencePointSettings> refSettings,MemParamEstimationSigMoid refMembershipFunction){
+	public void  takeSolution(SolutionSet solutionSet,SolutionSet population, int remain,ArrayList<ReferencePointSettings> refSettings,MemParamEstimationSigMoidPareto refMembershipFunction){
 		
 		NormalizeSolutionSetInFuzzy(solutionSet);
 		
@@ -475,7 +475,7 @@ public class ClusterMinMaxSampling {
 		
 	}
 
-	public static void takeNextGeneration(ArrayList<ReferencePoint> activePoints,SolutionSet solutionSet,SolutionSet population,MemParamEstimationSigMoid refMemberShipFunction,int populationSize) {
+	public static void takeNextGeneration(ArrayList<ReferencePoint> activePoints,SolutionSet solutionSet,SolutionSet population,MemParamEstimationSigMoidPareto refMemberShipFunction,int populationSize) {
 
 		refMemberShipFunction.Initialization(solutionSet);
 		

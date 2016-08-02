@@ -387,6 +387,14 @@ public class Solution implements Serializable {
     return aux;
   } // toString
 
+  public String toFuzzString() {
+	    String aux="";
+	    for (int i = 0; i < this.numberOfObjectives_; i++)
+	      aux = aux + this.get_Fuzzy_objective_value(i) + " ";
+
+	    return aux;
+	  } //
+  
   /**
    * Returns the decision variables of the solution.
    * @return the <code>DecisionVariables</code> object representing the decision

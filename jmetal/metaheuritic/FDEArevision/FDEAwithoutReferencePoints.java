@@ -28,10 +28,10 @@ import jmetal.util.JMException;
  *     To be presented in: PPSN'08. Dortmund. September 2008.
  */
 
-public class FDEA extends Algorithm {
+public class FDEAwithoutReferencePoints extends Algorithm {
 		
 
-	public FDEA(Problem problem) {
+	public FDEAwithoutReferencePoints(Problem problem) {
 		super (problem) ;
 	} 
 	
@@ -144,41 +144,31 @@ public class FDEA extends Algorithm {
 			
 			int numberOfObjectives= union.get(0).numberOfObjectives();
 			
-			ArrayList<ReferencePointSettings> refSettings= new ArrayList<ReferencePointSettings>();
 			
-			if(numberOfObjectives == 2){				
-				refSettings.add(new ReferencePointSettings(numberOfObjectives, 2000, 1.00, false));
-			}
-			else if(numberOfObjectives == 3){				
-				refSettings.add(new ReferencePointSettings(numberOfObjectives, 50, 1.00, false));
-			}
-			else if(numberOfObjectives == 4){				
-				refSettings.add(new ReferencePointSettings(numberOfObjectives, 50, 1.00, false));
-			}	
-			else if(numberOfObjectives == 5){			
-				refSettings.add(new ReferencePointSettings(numberOfObjectives, 25, 1.00, false));
-			}			
-			else if(numberOfObjectives == 7){
-				refSettings.add(new ReferencePointSettings(numberOfObjectives, 13, 1.00, false));			
-			}
-			else if(numberOfObjectives == 10){				
-				refSettings.add(new ReferencePointSettings(numberOfObjectives, 9, 1.00, false));			
-			}			
-			else if(numberOfObjectives == 12){							
-				refSettings.add(new ReferencePointSettings(numberOfObjectives,7, 1.00, false));							
-			}			
-			else if(numberOfObjectives == 15){
-				refSettings.add(new ReferencePointSettings(numberOfObjectives, 6, 1.00, false));							
-			}			
-			else if(numberOfObjectives == 20){
-				refSettings.add(new ReferencePointSettings(numberOfObjectives, 5, 1.00, false));							
-			}								
-			else{
-				System.out.println("Dimension Settings Not Specified");
-				System.exit(0);
-			}
-								
-			refPointAlgo.takeSolution(union, population, populationSize, refSettings, refMembershipFunction);
+			//ArrayList<ReferencePointSettings> refSettings= new ArrayList<ReferencePointSettings>();
+						
+			//refSettings.add(new ReferencePointSettings(numberOfObjectives, 1, 1.00, false));
+														
+			//refPointAlgo.takeSolution(union, population, populationSize, refSettings, refMembershipFunction);
+			
+				
+			refPointAlgo.NormalizeSolutionSetInFuzzy(union);
+			
+			ArrayList<ReferencePoint> activePoints=new ArrayList<ReferencePoint>();
+			double []direction=new double[numberOfObjectives];
+			for(int i=0;i<numberOfObjectives;i++)direction[i]=1;
+			ReferencePoint onePoint=new ReferencePoint(direction);
+			
+			
+			for(int i=0;i<union.size();i++){onePoint.addSolution(union.get(i));}
+			
+			onePoint.makeAndReturnSolutionSet();
+			
+			activePoints.add(onePoint);
+			
+			refPointAlgo.takeNextGeneration(activePoints,union,population,refMembershipFunction,populationSize);
+				
+										
 
 			if(population.size()!=populationSize){
 				System.out.println("Failure");
