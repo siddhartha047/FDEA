@@ -149,7 +149,8 @@ public class MemParamEstimationSigMoidMembershipUpdate {
 				
 			
 			A[i]=SigMoid.CalculateA(-ObjMean[i]+1.0*Objvar[i],.99,-ObjMean[i]);
-			APos[i]=SigMoid.CalculateA(ObjMean[i]-1.0*Objvar[i],.99,ObjMean[i]);
+			//APos[i]=SigMoid.CalculateA(ObjMean[i]-1.0*Objvar[i],.99,ObjMean[i]);
+			APos[i]=SigMoid.CalculateA(-ObjMean[i]-1.0*Objvar[i],0.99,0);
 			
 		}
 		

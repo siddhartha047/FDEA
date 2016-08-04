@@ -52,7 +52,7 @@ public class StaticSolutionSet {
 		}
 		
 		//random solutions
-		/*
+		
 		objectives[0][0]=0;
 		objectives[0][1]=1;
 		objectives[1][0]=0.14286;
@@ -87,7 +87,7 @@ public class StaticSolutionSet {
 		objectives[15][0]=0.82768;
 		objectives[15][1]=0.62824;
 		
-		*/
+		
 		/*
 		//line
 		objectives[0][0]=0.2;
@@ -108,7 +108,7 @@ public class StaticSolutionSet {
 		objectives[7][1]=5;
 		*/
 		//four line cases
-		
+		/*
 		objectives[0][0]=.2;
 		objectives[0][1]=.8;
 		objectives[1][0]=.5;
@@ -117,8 +117,8 @@ public class StaticSolutionSet {
 		objectives[2][1]=.2;
 		
 		objectives[3][0]=.4;
-		objectives[3][1]=0.6;
-		
+		objectives[3][1]=4;
+		*/
 		///concave
 		/*
 		objectives[0][0]=.2;

@@ -293,7 +293,7 @@ public class ClusterMinMaxSampling {
 		
 		//MemParamEstimationGaussian refMemberShipFunction=new MemParamEstimationGaussian();
 		MemParamEstimationSigMoid refMemberShipFunction=new MemParamEstimationSigMoid();
-		int populationSize = 2;
+		int populationSize = 8;
 		
     	SolutionSet solutionSet=new SolutionSet(populationSize*2);
     	StaticSolutionSet.MakeTwoObjectiveSolution(solutionSet);

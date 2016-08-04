@@ -291,7 +291,7 @@ public class ClusterMinMaxSamplingMemberUpdate {
 		String path="D:\\FDEA2016\\Codes\\abcgenerations\\recompileWFG-DTLZ\\FDEA\\backups\\10real\\2\\0.05\\";
 		
 		MemParamEstimationSigMoidMembershipUpdate refMemberShipFunction=new MemParamEstimationSigMoidMembershipUpdate();
-		int populationSize = 4;
+		int populationSize = 8;
 		
     	SolutionSet solutionSet=new SolutionSet(populationSize*2);
     	StaticSolutionSet.MakeTwoObjectiveSolution(solutionSet);
