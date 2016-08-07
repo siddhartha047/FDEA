@@ -74,7 +74,7 @@ public class MemParamEstimationSigMoid {
 			
 			A[i]=SigMoid.CalculateA(-ObjMean[i]+1.0*Objvar[i],.99,-ObjMean[i]);
 			//APos[i]=SigMoid.CalculateA(ObjMean[i]-1.0*Objvar[i],.99,ObjMean[i]);
-			APos[i]=SigMoid.CalculateA(-ObjMean[i]-1.0*Objvar[i],0.99,0);
+			APos[i]=SigMoid.CalculateA(-ObjMean[i]-1*Objvar[i],0.99,0);
 			
 		}
 		
@@ -217,7 +217,8 @@ public class MemParamEstimationSigMoid {
 			
 			
 			
-			value = SigMoid.SigMoidValue(diff, APos[i],ObjMean[i]);
+			//value = SigMoid.SigMoidValue(diff, APos[i],ObjMean[i]);
+			value = SigMoid.SigMoidValue(diff, APos[i],0);
 			dominateBy *= value;
 			
 			if(debug)System.out.print(i+" ---> "+value);
@@ -226,7 +227,8 @@ public class MemParamEstimationSigMoid {
 			System.out.println(diff);
 			System.out.println(value);*/
 			
-			value = SigMoid.SigMoidValue(-diff, APos[i],ObjMean[i]);
+			//value = SigMoid.SigMoidValue(-diff, APos[i],ObjMean[i]);
+			value = SigMoid.SigMoidValue(-diff, APos[i],0);
 			dominatedBy *= value;
 			
 			if(debug)System.out.println("\t"+i+" ---> "+value);
@@ -257,8 +259,8 @@ public class MemParamEstimationSigMoid {
 		
 		if(debug){
 			System.out.println(dominatedByWR+"\t"+dominateByWR);
-			tempMatrix[tmpi][tmpj]=dominatedByWR;
-			tempMatrix[tmpj][tmpi]=dominateByWR;
+			tempMatrix[tmpi][tmpj]=dominateByWR;
+			tempMatrix[tmpj][tmpi]=dominatedByWR;
 		}
 		
 		//System.exit(0);

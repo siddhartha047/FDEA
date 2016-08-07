@@ -293,7 +293,7 @@ public class ClusterMinMaxSampling {
 		
 		//MemParamEstimationGaussian refMemberShipFunction=new MemParamEstimationGaussian();
 		MemParamEstimationSigMoid refMemberShipFunction=new MemParamEstimationSigMoid();
-		int populationSize = 8;
+		int populationSize = 12;
 		
     	SolutionSet solutionSet=new SolutionSet(populationSize*2);
     	StaticSolutionSet.MakeTwoObjectiveSolution(solutionSet);
@@ -309,8 +309,8 @@ public class ClusterMinMaxSampling {
     	ClusterMinMaxSampling refPointAlgo=new ClusterMinMaxSampling();    	
     	
 		ArrayList<ReferencePoint> refPoints=new ArrayList<ReferencePoint>();			
-	//	refPointAlgo.Experiment(2,1,1.00,refPoints,false);
-		refPoints.add(new ReferencePoint(new double[]{0.5,0.5}));
+		refPointAlgo.Experiment(2,11,1.00,refPoints,false);
+	//	refPoints.add(new ReferencePoint(new double[]{0.5,0.5}));
 				
 		printReferencePointInfile(refPoints,path+"2referencepoints.ref");
 		
@@ -388,6 +388,40 @@ public class ClusterMinMaxSampling {
 		    }	
 	}
 	
+	static boolean check_belong(Solution sol, SolutionSet population){
+		for(int i=0;i<population.size();i++){
+			if(population.get(i).equals(sol))return true;
+		}
+		return false;
+	}
+	
+	static void printFitnesstoFile(SolutionSet solutionsList_,SolutionSet population,String path){
+		try {
+		      /* Open the file */
+		      FileOutputStream fos   = new FileOutputStream(path)     ;
+		      OutputStreamWriter osw = new OutputStreamWriter(fos)    ;
+		      BufferedWriter bw      = new BufferedWriter(osw)        ;
+		                        
+		      for (int i = 0; i < solutionsList_.size(); i++) {		        
+		    	
+		    	if(check_belong(solutionsList_.get(i),population))
+		    	{
+		    		bw.write("-1");
+		    	}
+		    	else{
+		    		bw.write(String.valueOf(solutionsList_.get(i).getFitness()));
+		    	}
+		    			    			    			    			    			    
+		    	bw.newLine();
+		      }
+		      			      
+		      bw.close();
+		    }catch (IOException e) {			      
+		      e.printStackTrace();
+		    }	
+	}
+
+	
 	static void printFitnesstoFile(SolutionSet solutionsList_,String path){
 		try {
 		      /* Open the file */
@@ -414,6 +448,8 @@ public class ClusterMinMaxSampling {
 		                        
 		      for (int i = 0; i < solutionsList_.size(); i++) {
 		        
+		    	if(solutionsList_.get(i).associatedSolutionSet.size()==0)continue;
+		    		
 		    	bw.write(solutionsList_.get(i).toString());		    	
 		    	bw.newLine();		    			    	
 		    	SolutionSet solutions=solutionsList_.get(i).getSolutionSet();
@@ -508,14 +544,33 @@ public class ClusterMinMaxSampling {
 	}
 	
 	
+
+	/*solutionSet.printObjectivesToFile(path+"2dlinear1_2.pf");
+	solutionSet.printFuzzySolutionSetToFile(path+"2dlinearfuzzy1_2.pf");    					
+	printReferencePointInfile(refPoints,path+"2referencepoints.ref");					
+	printReferencePointInfile(activePoints, path+"2activePoints.ref");
+	printReferencePointInfile(activePoints, path+"2reducedPoints.ref");		
+	printClusterPointInfile(activePoints, path+"2clusterpoints.refsol");
+	printClusterFuzzyPointInfile(activePoints, path+"2clusterfuzzypoints.refsol");				
+	printMembershipFunction(path+"2dmembership.func",2);		
+	printFitnesstoFile(solutionSet,path+"2dfitnessval.sol");	
+	population.printObjectivesToFile(path+"2dlinearsol1_2.pf");*/
+	
 	public void  takeSolution(SolutionSet solutionSet,SolutionSet population, int remain,ArrayList<ReferencePointSettings> refSettings,MemParamEstimationSigMoid refMembershipFunction){
-		
+		boolean debug=false;
+		String path="D:\\FDEA2016\\Codes\\abcgenerations\\recompileWFG-DTLZ\\FDEA\\backups\\10real\\2\\0.05\\";
+		/*
+		if(FDEA.GenerationNo==248){
+			System.out.println("Ok");
+			debug=true;
+			refSettings.get(0).numberOfDivision=49;
+			remain=solutionSet.size()/2;
+		}
+		*/		
 		NormalizeSolutionSetInFuzzy(solutionSet);
 		
-		
-		
+				
 		ArrayList<ReferencePoint> refPoints=new ArrayList<ReferencePoint>();	
-		
 		
 		for(int i=0;i<refSettings.size();i++){
 			Experiment(
@@ -528,7 +583,14 @@ public class ClusterMinMaxSampling {
 			
 		}
 		
-		
+		/*
+		if(debug==true)
+		{
+			//refPoints.add(new ReferencePoint(new double[]{0.5,0.5}));
+		}
+		else{
+			
+		}*/
 		
 		//GenerateRandomly(refPoints,refSettings.get(0).numberOfObjectives,refSettings.get(0).numberOfDivision);
 		
@@ -539,8 +601,11 @@ public class ClusterMinMaxSampling {
 		}
 		*/
 		
+		if(debug==true)printReferencePointInfile(refPoints,path+"2referencepoints.ref");
 		
 		ArrayList<ReferencePoint> activePoints= ActiveReferencePoint(refPoints, solutionSet);
+		
+		if(debug==true)printReferencePointInfile(activePoints, path+"2activePoints.ref");
 		
 		/**
 		 * Reducing active points
@@ -550,8 +615,11 @@ public class ClusterMinMaxSampling {
 		System.out.println("ReferencePoints :"+refPoints.size());
 		System.out.println("Actual Active Points : "+activePoints.size());
 		
-		int RequiredSize = solutionSet.size()/FDEA_Main.onAvg;
-		//int RequiredSize = refPoints.get(0).numberOfObjectives;
+		//int RequiredSize = solutionSet.size()/FDEA_Main.onAvg;
+		
+		int RequiredSize = remain*2/FDEA_Main.onAvg;
+		
+		if(debug==true)RequiredSize=15;
 		
 		if(activePoints.size()>RequiredSize){
 			
@@ -587,13 +655,12 @@ public class ClusterMinMaxSampling {
 			
 			
 		}
-	
+		
+		if(debug==true)printReferencePointInfile(activePoints, path+"2reducedPoints.ref");
 		
 		//ModifyActivePointsWithClustering(activePoints);		
 		//activePoints= ActiveReferencePoint(activePoints, solutionSet);
 		//System.out.println("Active Points after Clustering : "+activePoints.size());
-	
-		
 		//printReferencePoint(activePoints,"Active Points After smoothing");
 		
 		
@@ -603,14 +670,26 @@ public class ClusterMinMaxSampling {
 		//Collections.sort(activePoints,new SidCrowdingComparator());
 		
 		
-		
-		
-		
 		System.out.println("Actual Active point used "+activePoints.size());
+		
+		if(debug==true){			
+			printClusterPointInfile(activePoints, path+"2clusterpoints.refsol");
+			printClusterFuzzyPointInfile(activePoints, path+"2clusterfuzzypoints.refsol");				
+					
+		}
+		
 		
 		takeNextGeneration(activePoints,solutionSet,population,refMembershipFunction,remain);
 		
 		
+		if(debug==true){
+			solutionSet.printObjectivesToFile(path+"2dlinear1_2.pf");				
+			solutionSet.printFuzzySolutionSetToFile(path+"2dlinearfuzzy1_2.pf");
+			printMembershipFunction(path+"2dmembership.func",2);		
+			//printFitnesstoFile(solutionSet,path+"2dfitnessval.sol");
+			printFitnesstoFile(solutionSet,population,path+"2dfitnessval.sol");
+			population.printObjectivesToFile(path+"2dlinearsol1_2.pf");
+		}
 		
 	}
 	
@@ -1092,5 +1171,208 @@ public class ClusterMinMaxSampling {
 		/////////////////
 	}
 
+	public void  takeSolutionPareto(SolutionSet solutionSet,SolutionSet population, int remain,ArrayList<ReferencePointSettings> refSettings,MemParamEstimationPareto refMembershipFunction){
+		boolean debug=false;
+		String path="D:\\FDEA2016\\Codes\\abcgenerations\\recompileWFG-DTLZ\\FDEA\\backups\\10real\\2\\0.05\\";
+		/*
+		if(FDEA.GenerationNo==248){
+			System.out.println("Ok");
+			debug=true;
+			refSettings.get(0).numberOfDivision=49;
+			remain=solutionSet.size()/2;
+		}
+		*/		
+		NormalizeSolutionSetInFuzzy(solutionSet);
+		
+				
+		ArrayList<ReferencePoint> refPoints=new ArrayList<ReferencePoint>();	
+		
+		for(int i=0;i<refSettings.size();i++){
+			Experiment(
+					refSettings.get(i).numberOfObjectives,
+					refSettings.get(i).numberOfDivision,
+					refSettings.get(i).limit,
+					refPoints,
+					refSettings.get(i).includeLimit
+				);
+			
+		}
+		
+		/*
+		if(debug==true)
+		{
+			//refPoints.add(new ReferencePoint(new double[]{0.5,0.5}));
+		}
+		else{
+			
+		}*/
+		
+		//GenerateRandomly(refPoints,refSettings.get(0).numberOfObjectives,refSettings.get(0).numberOfDivision);
+		
+		/*
+		System.out.println("------------->>");
+		for(int i=0;i<refPoints.size();i++){
+			refPoints.get(i).printPoint();
+		}
+		*/
+		
+		if(debug==true)printReferencePointInfile(refPoints,path+"2referencepoints.ref");
+		
+		ArrayList<ReferencePoint> activePoints= ActiveReferencePoint(refPoints, solutionSet);
+		
+		if(debug==true)printReferencePointInfile(activePoints, path+"2activePoints.ref");
+		
+		/**
+		 * Reducing active points
+		 */
+		//
+		
+		System.out.println("ReferencePoints :"+refPoints.size());
+		System.out.println("Actual Active Points : "+activePoints.size());
+		
+		//int RequiredSize = solutionSet.size()/FDEA_Main.onAvg;
+		
+		int RequiredSize = remain*2/FDEA_Main.onAvg;
+		
+		if(debug==true)RequiredSize=15;
+		
+		if(activePoints.size()>RequiredSize){
+			
+			
+			sidRefDistanceSort.crowdingDistanceAssignment(activePoints,refSettings.get(0).numberOfObjectives);
+			
+			//sidRefDistanceCrowd.crowdingDistanceAssignment(activePoints,refSettings.get(0).numberOfObjectives);			
+			//Collections.sort(activePoints,new SidCrowdingComparator());
+			
+			
+			//printReferencePoint(refPoints,"Global Reference Points");			
+			//printReferencePoint(activePoints,"Active Points");
+
+			/*
+			for(int i=0;i<activePoints.size();i++){
+				System.out.println(activePoints.get(i).crowdingDistance);
+			}
+			*/
+			
+			
+			while(activePoints.size()>RequiredSize){
+				activePoints.remove(activePoints.size()-1);
+			}
+			
+			//printReferencePoint(activePoints,"Active Points After reduction");
+			
+			
+			
+			System.out.println("Crowding Active Points : "+activePoints.size());			 
+			activePoints= ActiveReferencePoint(activePoints, solutionSet);
+			
+			System.out.println("After Crowding Active Points : "+activePoints.size());			
+			
+			
+		}
+		
+		if(debug==true)printReferencePointInfile(activePoints, path+"2reducedPoints.ref");
+		
+		//ModifyActivePointsWithClustering(activePoints);		
+		//activePoints= ActiveReferencePoint(activePoints, solutionSet);
+		//System.out.println("Active Points after Clustering : "+activePoints.size());
+		//printReferencePoint(activePoints,"Active Points After smoothing");
+		
+		
+		sidRefDistanceSort.crowdingDistanceAssignment(activePoints,refSettings.get(0).numberOfObjectives);
+		
+		//sidRefDistanceCrowd.crowdingDistanceAssignment(activePoints,refSettings.get(0).numberOfObjectives);						
+		//Collections.sort(activePoints,new SidCrowdingComparator());
+		
+		
+		System.out.println("Actual Active point used "+activePoints.size());
+		
+		if(debug==true){			
+			printClusterPointInfile(activePoints, path+"2clusterpoints.refsol");
+			printClusterFuzzyPointInfile(activePoints, path+"2clusterfuzzypoints.refsol");				
+					
+		}
+		
+		
+		takeNextGenerationPareto(activePoints,solutionSet,population,refMembershipFunction,remain);
+		
+		
+		if(debug==true){
+			solutionSet.printObjectivesToFile(path+"2dlinear1_2.pf");				
+			solutionSet.printFuzzySolutionSetToFile(path+"2dlinearfuzzy1_2.pf");
+			printMembershipFunction(path+"2dmembership.func",2);		
+			//printFitnesstoFile(solutionSet,path+"2dfitnessval.sol");
+			printFitnesstoFile(solutionSet,population,path+"2dfitnessval.sol");
+			population.printObjectivesToFile(path+"2dlinearsol1_2.pf");
+		}
+		
+	}
+	
+	public static void takeNextGenerationPareto(ArrayList<ReferencePoint> activePoints,SolutionSet solutionSet,SolutionSet population,MemParamEstimationPareto refMemberShipFunction,int populationSize) {
+
+		
+		
+		
+		
+		for(int i=0;i<activePoints.size();i++){
+			ReferencePoint activePoint=activePoints.get(i);
+			
+			if(activePoint.getSolutionSet().size()>1)
+			{
+				if(!activePoint.isSorted){
+					refMemberShipFunction.FitnessAssignment(activePoint.getSolutionSet());
+					activePoint.sort();
+					activePoint.isSorted=true;
+				}
+			}
+			
+		}
+		
+		
+		
+		int index=0;
+		int activePointLength=activePoints.size();
+		
+		populationSize=population.size()+populationSize;
+		int lifetimeExpires=0;
+		
+		while(population.size()<populationSize){
+								
+			
+			ReferencePoint activePoint = activePoints.get(index);
+			SolutionSet activeSolutionSet = activePoint.getSolutionSet();
+			
+			
+			
+			for(int i=0;i<activeSolutionSet.size();i++){
+				Solution activeSolution=activeSolutionSet.get(i);
+				
+				
+				
+				if(activeSolution.lifeTime>0){
+					population.add(activeSolution);
+					activeSolutionSet.remove(i);
+					break;
+				}
+				else if(!activeSolution.firstSweep){
+					population.add(activeSolution);
+					activeSolutionSet.remove(i);
+					break;
+				}
+				else{
+					if(activeSolution.lifeTime<0){
+						lifetimeExpires++;
+					}
+					activeSolution.firstSweep=false;
+				}
+			}
+			
+			index=(index+1)%activePointLength;
+		}
+		
+		System.out.println("LifeTime expires : "+ lifetimeExpires);
+		
+		/////////////////
+	}
 	
 }

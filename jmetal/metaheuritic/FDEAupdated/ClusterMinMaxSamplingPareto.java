@@ -350,7 +350,7 @@ public class ClusterMinMaxSamplingPareto {
 		System.out.println("ReferencePoints :"+refPoints.size());
 		System.out.println("Actual Active Points : "+activePoints.size());
 		
-		int RequiredSize = solutionSet.size()/FDEA_Main.onAvg;
+		int RequiredSize = remain/FDEA_Main.onAvg;
 		//int RequiredSize = refPoints.get(0).numberOfObjectives;
 		
 		if(activePoints.size()>RequiredSize){

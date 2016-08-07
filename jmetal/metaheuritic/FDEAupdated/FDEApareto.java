@@ -30,11 +30,11 @@ import jmetal.util.comparators.CrowdingComparator;
  *     To be presented in: PPSN'08. Dortmund. September 2008.
  */
 
-public class FDEA extends Algorithm {
+public class FDEApareto extends Algorithm {
 	
 	public static int GenerationNo=0;
 
-	public FDEA(Problem problem) {
+	public FDEApareto(Problem problem) {
 		super (problem) ;
 	} 
 	
@@ -100,9 +100,9 @@ public class FDEA extends Algorithm {
 		//ClusterMinMaxSamplingMemberUpdate refPointAlgo=new ClusterMinMaxSamplingMemberUpdate();
 		//MemParamEstimationSigMoidMembershipUpdate refMembershipFunction=new MemParamEstimationSigMoidMembershipUpdate();
 		ClusterMinMaxSampling refPointAlgo=new ClusterMinMaxSampling();
-		MemParamEstimationSigMoid refMembershipFunction=new MemParamEstimationSigMoid();
+		//MemParamEstimationSigMoid refMembershipFunction=new MemParamEstimationSigMoid();
 		//MemParamEstimationGaussian refMembershipFunction=new MemParamEstimationGaussian();
-		
+		  MemParamEstimationPareto refMembershipFunction=new MemParamEstimationPareto();
 
 		//int GenerationNo=0;
 		GenerationNo=0;
@@ -273,7 +273,8 @@ public class FDEA extends Algorithm {
 			}
 								
 			//refPointAlgo.takeSolutionGaussian(union, population, populationSize, refSettings, refMembershipFunction);
-			refPointAlgo.takeSolution(union, population, populationSize, refSettings, refMembershipFunction);
+			//refPointAlgo.takeSolution(union, population, populationSize, refSettings, refMembershipFunction);
+			refPointAlgo.takeSolutionPareto(union, population, populationSize, refSettings, refMembershipFunction);
 
 			if(population.size()!=populationSize){
 				System.out.println("Failure");
