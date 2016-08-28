@@ -42,8 +42,8 @@ public class FDEA extends Algorithm {
 		
 		//ClusterMinMaxSampling.SimpleExperiment();
 		//ClusterMinMaxSamplingMemberUpdate.ImpactofReferencePointandFuzzy();
-		//ClusterMinMaxSampling.ImpactofReferencePointandFuzzy();
-		//System.exit(0);
+		ClusterMinMaxSampling.ImpactofReferencePointandFuzzy();
+		System.exit(0);
 		
 		double lifeTime = 10.00;
 		double decrement  = 0.00;
@@ -176,7 +176,7 @@ public class FDEA extends Algorithm {
 			double genProbability=(double)GenerationNo/(double)maxGeneration;
 			double prob=Math.random();
 			//
-			if(false){
+			if(prob<genProbability){
 				System.out.println("Pareto applied");
 			
 				Ranking paretoRank=new Ranking(union);
@@ -235,7 +235,7 @@ public class FDEA extends Algorithm {
 			
 			ArrayList<ReferencePointSettings> refSettings= new ArrayList<ReferencePointSettings>();
 			
-			if(numberOfObjectives == 2){				
+				 if(numberOfObjectives == 2){				
 				refSettings.add(new ReferencePointSettings(numberOfObjectives, 2000, 1.00, false));
 			}
 			else if(numberOfObjectives == 3){				
@@ -251,9 +251,7 @@ public class FDEA extends Algorithm {
 				refSettings.add(new ReferencePointSettings(numberOfObjectives, 13, 1.00, false));			
 			}
 			else if(numberOfObjectives == 10){				
-				refSettings.add(new ReferencePointSettings(numberOfObjectives, 9, 1.00, false));
-				
-				
+				refSettings.add(new ReferencePointSettings(numberOfObjectives, 8, 1.00, false));								
 			}			
 			else if(numberOfObjectives == 12){							
 				refSettings.add(new ReferencePointSettings(numberOfObjectives,7, 1.00, false));				

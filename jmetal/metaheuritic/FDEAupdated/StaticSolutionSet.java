@@ -111,18 +111,31 @@ public class StaticSolutionSet {
 		objectives[7][1]=0.2;
 		*/
 		//four line cases
+		
 		/*
 		objectives[0][0]=.2;
 		objectives[0][1]=.8;
 		objectives[1][0]=.5;
 		objectives[1][1]=.5;
 		objectives[2][0]=.8;
-		objectives[2][1]=.2;
-		
-		objectives[3][0]=.3;
+		objectives[2][1]=.2;		
+		objectives[3][0]=.7;
 		objectives[3][1]=.9;
 		*/
 		
+		objectives[0][0]=.1;
+		objectives[0][1]=.3;
+		objectives[1][0]=.2;
+		objectives[1][1]=.2;
+		objectives[2][0]=.3;
+		objectives[2][1]=.1;		
+		objectives[3][0]=.4;
+		objectives[3][1]=0.0;
+		objectives[4][0]= 0.22;
+		objectives[4][1]=0.12;
+		objectives[5][0]=.3;
+		objectives[5][1]=1.5;
+
 		///concave
 		/*
 		objectives[0][0]=.2;
@@ -272,7 +285,7 @@ public class StaticSolutionSet {
 		*/
 		
 		//two level concave
-		
+		/*
 		objectives[0][0]=1;
 		objectives[0][1]=0;
 		objectives[1][0]=0.98982;
@@ -321,7 +334,7 @@ public class StaticSolutionSet {
 		objectives[22][1]=1.1878;
 		objectives[23][0]=0;
 		objectives[23][1]=1.2;
-		
+		*/
 		//two level line
 		/*
 		objectives[0][0]=0;

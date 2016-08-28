@@ -79,7 +79,7 @@ public class FDEA_Main_Rectangle_Problem {
 	
 			int M = 4;
 			
-			int populationSize = 150;
+			int populationSize = 250;
 			int GenerationNo = 250;
 	
 		

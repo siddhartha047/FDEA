@@ -79,7 +79,7 @@ public class FDEA_Main_Pareto_Box_problem {
 	
 			int M = 4;
 			
-			int populationSize = 250;
+			int populationSize = 350;
 			int GenerationNo = 250;
 	
 		

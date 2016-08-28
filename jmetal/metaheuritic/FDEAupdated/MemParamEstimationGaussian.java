@@ -84,6 +84,8 @@ public class MemParamEstimationGaussian {
         */
         
 	}
+	
+	boolean debug=true;
         
 	public void FitnessAssignment(SolutionSet solutionSet){
 		fuzzyfication(solutionSet);
@@ -95,6 +97,17 @@ public class MemParamEstimationGaussian {
 				sum+=phimatrix[i][j]/(phimatrix[i][j]+phimatrix[j][i]);
 			}
 			solutionSet.get(i).setFitness(sum/(double)(numberofsolution-1));
+		}
+		
+		if(debug){
+			System.out.println("######################");
+			for (int i = 0; i < numberofsolution; i++) {
+				for (int j = 0; j < numberofsolution; j++) {
+					System.out.print(phimatrix[i][j]+"\t");
+				}
+				System.out.println();
+			}
+			System.out.println("######################");
 		}
 	}
 	

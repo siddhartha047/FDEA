@@ -291,9 +291,9 @@ public class ClusterMinMaxSampling {
 	public static void ImpactofReferencePointandFuzzy(){
 		String path="D:\\FDEA2016\\Codes\\abcgenerations\\recompileWFG-DTLZ\\FDEA\\backups\\10real\\2\\0.05\\";
 		
-		//MemParamEstimationGaussian refMemberShipFunction=new MemParamEstimationGaussian();
-		MemParamEstimationSigMoid refMemberShipFunction=new MemParamEstimationSigMoid();
-		int populationSize = 12;
+		MemParamEstimationGaussian refMemberShipFunction=new MemParamEstimationGaussian();
+		//MemParamEstimationSigMoid refMemberShipFunction=new MemParamEstimationSigMoid();
+		int populationSize = 3;
 		
     	SolutionSet solutionSet=new SolutionSet(populationSize*2);
     	StaticSolutionSet.MakeTwoObjectiveSolution(solutionSet);
@@ -309,8 +309,8 @@ public class ClusterMinMaxSampling {
     	ClusterMinMaxSampling refPointAlgo=new ClusterMinMaxSampling();    	
     	
 		ArrayList<ReferencePoint> refPoints=new ArrayList<ReferencePoint>();			
-		refPointAlgo.Experiment(2,11,1.00,refPoints,false);
-	//	refPoints.add(new ReferencePoint(new double[]{0.5,0.5}));
+	//	refPointAlgo.Experiment(2,11,1.00,refPoints,false);
+		refPoints.add(new ReferencePoint(new double[]{0.5,0.5}));
 				
 		printReferencePointInfile(refPoints,path+"2referencepoints.ref");
 		
@@ -348,10 +348,10 @@ public class ClusterMinMaxSampling {
 		SolutionSet population = new SolutionSet(populationSize);
 		
 		
-		takeNextGeneration(activePoints,solutionSet,population,refMemberShipFunction,populationSize);
-		printMembershipFunction(path+"2dmembership.func",2);
+		//takeNextGeneration(activePoints,solutionSet,population,refMemberShipFunction,populationSize);
+		//printMembershipFunction(path+"2dmembership.func",2);
 		
-		//takeNextGenerationGaussian(activePoints,solutionSet,population,refMemberShipFunction,populationSize);
+		takeNextGenerationGaussian(activePoints,solutionSet,population,refMemberShipFunction,populationSize);
 		
 		
 		

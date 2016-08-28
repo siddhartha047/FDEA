@@ -150,7 +150,7 @@ public class zhenan extends Algorithm{
 			// Remain is less than front(index).size, insert only the best one
 			if (remain > 0) {  // front contains individuals to insert                        
 
-				System.out.println(front.size()+"\trequired\t"+remain);
+			//	System.out.println(front.size()+"\trequired\t"+remain);
 				
 				
 				distance.crowdingDistanceAssignment(front, problem_.getNumberOfObjectives());				
@@ -163,10 +163,10 @@ public class zhenan extends Algorithm{
 			} // if      
 			
 			
-			String path=zhenan_mainDTLZ.currentPath+Integer.toString(GenerationNo);
+			//String path=zhenan_mainDTLZ.currentPath+Integer.toString(GenerationNo);
 			//String path=zhenan_main.currentPath+Integer.toString(GenerationNo);
-			population.printObjectivesToFile(path);
-			System.out.println(path);
+			//population.printObjectivesToFile(path);
+			//System.out.println(path);
 			GenerationNo++;
 			System.out.println(GenerationNo);
 			

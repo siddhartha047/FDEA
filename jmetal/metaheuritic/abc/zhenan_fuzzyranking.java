@@ -57,7 +57,7 @@ public class zhenan_fuzzyranking {
     	int sz = solutionSet_.size();
 	    while(solutionSet_.size()!=0){
 	    	//mnf.fuzzyfication(solutionSet);
-	    	System.out.println("before fitness: "+solutionSet_.size());
+	    	//System.out.println("before fitness: "+solutionSet_.size());
 	    	if(solutionSet_.size()<2){
 	    		front[initialrank].add(solutionSet_.get(0));
 	    		initialrank++;
