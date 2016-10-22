@@ -85,7 +85,7 @@ public class MemParamEstimationGaussian {
         
 	}
 	
-	boolean debug=true;
+	boolean debug=false;
         
 	public void FitnessAssignment(SolutionSet solutionSet){
 		fuzzyfication(solutionSet);

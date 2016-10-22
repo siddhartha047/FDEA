@@ -42,8 +42,8 @@ public class FDEA extends Algorithm {
 		
 		//ClusterMinMaxSampling.SimpleExperiment();
 		//ClusterMinMaxSamplingMemberUpdate.ImpactofReferencePointandFuzzy();
-		ClusterMinMaxSampling.ImpactofReferencePointandFuzzy();
-		System.exit(0);
+		//ClusterMinMaxSampling.ImpactofReferencePointandFuzzy();
+		//System.exit(0);
 		
 		double lifeTime = 10.00;
 		double decrement  = 0.00;
@@ -100,8 +100,8 @@ public class FDEA extends Algorithm {
 		//ClusterMinMaxSamplingMemberUpdate refPointAlgo=new ClusterMinMaxSamplingMemberUpdate();
 		//MemParamEstimationSigMoidMembershipUpdate refMembershipFunction=new MemParamEstimationSigMoidMembershipUpdate();
 		ClusterMinMaxSampling refPointAlgo=new ClusterMinMaxSampling();
-		MemParamEstimationSigMoid refMembershipFunction=new MemParamEstimationSigMoid();
-		//MemParamEstimationGaussian refMembershipFunction=new MemParamEstimationGaussian();
+		//MemParamEstimationSigMoid refMembershipFunction=new MemParamEstimationSigMoid();
+		MemParamEstimationGaussian refMembershipFunction=new MemParamEstimationGaussian();
 		
 
 		//int GenerationNo=0;
@@ -120,7 +120,7 @@ public class FDEA extends Algorithm {
 				if (evaluations < maxEvaluations) {
 					//obtain parents
 					
-					if(objNo<5){
+					if(objNo<4){
 						parents[0] = (Solution) selectionOperator.execute(population);
 						parents[1] = (Solution) selectionOperator.execute(population);
 					}
@@ -176,7 +176,7 @@ public class FDEA extends Algorithm {
 			double genProbability=(double)GenerationNo/(double)maxGeneration;
 			double prob=Math.random();
 			//
-			if(prob<genProbability){
+			if(false){
 				System.out.println("Pareto applied");
 			
 				Ranking paretoRank=new Ranking(union);
@@ -236,13 +236,13 @@ public class FDEA extends Algorithm {
 			ArrayList<ReferencePointSettings> refSettings= new ArrayList<ReferencePointSettings>();
 			
 				 if(numberOfObjectives == 2){				
-				refSettings.add(new ReferencePointSettings(numberOfObjectives, 2000, 1.00, false));
+				refSettings.add(new ReferencePointSettings(numberOfObjectives, 10000, 1.00, false));
 			}
 			else if(numberOfObjectives == 3){				
 				refSettings.add(new ReferencePointSettings(numberOfObjectives, 100, 1.00, false));
 			}
 			else if(numberOfObjectives == 4){				
-				refSettings.add(new ReferencePointSettings(numberOfObjectives, 40, 1.00, false));
+				refSettings.add(new ReferencePointSettings(numberOfObjectives, 60, 1.00, false));
 			}	
 			else if(numberOfObjectives == 5){			
 				refSettings.add(new ReferencePointSettings(numberOfObjectives, 30, 1.00, false));
@@ -251,7 +251,7 @@ public class FDEA extends Algorithm {
 				refSettings.add(new ReferencePointSettings(numberOfObjectives, 13, 1.00, false));			
 			}
 			else if(numberOfObjectives == 10){				
-				refSettings.add(new ReferencePointSettings(numberOfObjectives, 8, 1.00, false));								
+				refSettings.add(new ReferencePointSettings(numberOfObjectives, 11, 1.00, false));								
 			}			
 			else if(numberOfObjectives == 12){							
 				refSettings.add(new ReferencePointSettings(numberOfObjectives,7, 1.00, false));				
@@ -270,8 +270,8 @@ public class FDEA extends Algorithm {
 				System.exit(0);
 			}
 								
-			//refPointAlgo.takeSolutionGaussian(union, population, populationSize, refSettings, refMembershipFunction);
-			refPointAlgo.takeSolution(union, population, populationSize, refSettings, refMembershipFunction);
+			refPointAlgo.takeSolutionGaussian(union, population, populationSize, refSettings, refMembershipFunction);
+		//	refPointAlgo.takeSolution(union, population, populationSize, refSettings, refMembershipFunction);
 
 			if(population.size()!=populationSize){
 				System.out.println("Failure");

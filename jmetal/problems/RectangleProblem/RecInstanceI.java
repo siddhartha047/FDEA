@@ -39,8 +39,8 @@ public class RecInstanceI extends Problem{
 	    for (int i = 0; i < numberOfVariables_; i++) {
 	      //lowerLimit_[i] = -20 	;
 	      //upperLimit_[i] = 120  ;
-	    	lowerLimit_[i] = -10000;
-	    	upperLimit_[i] = 10000;
+	    	lowerLimit_[i] = -10000.0;
+	    	upperLimit_[i] =  10000.0;
 	    } // for
 	        
 	    if (solutionType.compareTo("BinaryReal") == 0)
@@ -66,9 +66,7 @@ public class RecInstanceI extends Problem{
 	    for (int i = 0 ; i < numberOfVariables_; i++)
 	    	x[i] = vars.getValue(i) ;
 	    
-	    
-	    
-	    
+	    	    	   
 	    
 	    fx[0]=Math.abs(x[0]-0);
 	    fx[1]=Math.abs(x[0]-100);

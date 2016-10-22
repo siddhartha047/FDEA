@@ -122,7 +122,7 @@ public class StaticSolutionSet {
 		objectives[3][0]=.7;
 		objectives[3][1]=.9;
 		*/
-		
+		/*
 		objectives[0][0]=.1;
 		objectives[0][1]=.3;
 		objectives[1][0]=.2;
@@ -135,7 +135,7 @@ public class StaticSolutionSet {
 		objectives[4][1]=0.12;
 		objectives[5][0]=.3;
 		objectives[5][1]=1.5;
-
+		 */
 		///concave
 		/*
 		objectives[0][0]=.2;
@@ -335,6 +335,131 @@ public class StaticSolutionSet {
 		objectives[23][0]=0;
 		objectives[23][1]=1.2;
 		*/
+		//circle
+		/*objectives[0][0]=0.99452;
+		objectives[0][1]=0.10453;
+		objectives[1][0]=0.97815;
+		objectives[1][1]=0.20791;
+		objectives[2][0]=0.77715;
+		objectives[2][1]=0.62932;
+		objectives[3][0]=0.83867;
+		objectives[3][1]=0.54464;
+		objectives[4][0]=0.54464;
+		objectives[4][1]=0.83867;
+		objectives[5][0]=0.62932;
+		objectives[5][1]=0.77715;
+		objectives[6][0]=0.20791;
+		objectives[6][1]=0.97815;
+		objectives[7][0]=0.10453;
+		objectives[7][1]=0.99452;*/
+/*
+		objectives[0][0]=0.99619;
+		objectives[0][1]=0.087156;
+		objectives[1][0]=1.055;
+		objectives[1][1]=0.092304;
+		objectives[2][0]=1.1107;
+		objectives[2][1]=0.15638;
+		objectives[3][0]=0.97437;
+		objectives[3][1]=0.22495;
+		objectives[4][0]=1.0706;
+		objectives[4][1]=0.24717;
+		objectives[5][0]=1.1391;
+		objectives[5][1]=0.14773;
+		objectives[6][0]=0.78801;
+		objectives[6][1]=0.61566;
+		objectives[7][0]=0.83912;
+		objectives[7][1]=0.65559;
+		objectives[8][0]=0.86015;
+		objectives[8][1]=0.67202;
+		objectives[9][0]=0.82904;
+		objectives[9][1]=0.55919;
+		objectives[10][0]=0.88151;
+		objectives[10][1]=0.59459;
+		objectives[11][0]=0.8773;
+		objectives[11][1]=0.6724;
+		objectives[12][0]=0.55919;
+		objectives[12][1]=0.82904;
+		objectives[13][0]=0.60182;
+		objectives[13][1]=0.89223;
+		objectives[14][0]=0.69502;
+		objectives[14][1]=0.86912;
+		objectives[15][0]=0.61566;
+		objectives[15][1]=0.78801;
+		objectives[16][0]=0.63839;
+		objectives[16][1]=0.8171;
+		objectives[17][0]=0.69523;
+		objectives[17][1]=0.89104;
+		objectives[18][0]=0.22495;
+		objectives[18][1]=0.97437;
+		objectives[19][0]=0.23287;
+		objectives[19][1]=1.0087;
+		objectives[20][0]=0.24508;
+		objectives[20][1]=1.0616;
+		objectives[21][0]=0.087156;
+		objectives[21][1]=0.99619;
+		objectives[22][0]=0.089174;
+		objectives[22][1]=1.0193;
+		objectives[23][0]=0.094304;
+		objectives[23][1]=1.0779;
+
+		objectives[24][0]=0;
+		objectives[24][1]=1.2;
+
+		objectives[25][0]=1.2;
+		objectives[25][1]=0;*/
+		
+		/*
+		objectives[0][0]=0.99649;
+		objectives[0][1]=0.083678;
+		objectives[1][0]=0.97358;
+		objectives[1][1]=0.22835;
+		objectives[2][0]=0.78801;
+		objectives[2][1]=0.61566;
+		objectives[3][0]=0.84081;
+		objectives[3][1]=0.65691;
+		objectives[4][0]=0.82904;
+		objectives[4][1]=0.55919;
+		objectives[5][0]=0.87473;
+		objectives[5][1]=0.59001;
+		objectives[6][0]=0.55919;
+		objectives[6][1]=0.82904;
+		objectives[7][0]=0.62;
+		objectives[7][1]=0.86;
+		objectives[8][0]=0.61566;
+		objectives[8][1]=0.78801;
+		objectives[9][0]=0.61;
+		objectives[9][1]=0.85;
+		objectives[10][0]=0.22835;
+		objectives[10][1]=0.97358;
+		objectives[11][0]=0.083678;
+		objectives[11][1]=0.99649;
+*/
+		objectives[0][0]=0.99649;
+		objectives[0][1]=0.083678;
+		objectives[1][0]=0.97358;
+		objectives[1][1]=0.22835;
+		objectives[2][0]=0.78801;
+		objectives[2][1]=0.61566;
+		objectives[3][0]=0.84081;
+		objectives[3][1]=0.65691;
+		objectives[4][0]=0.82904;
+		objectives[4][1]=0.55919;
+		objectives[5][0]=0.18;
+		objectives[5][1]=1.02;
+		objectives[6][0]=0.55919;
+		objectives[6][1]=0.82904;
+		objectives[7][0]=0.62;
+		objectives[7][1]=0.86;
+		objectives[8][0]=0.61566;
+		objectives[8][1]=0.78801;
+		objectives[9][0]=0.61;
+		objectives[9][1]=0.85;
+		objectives[10][0]=0.22835;
+		objectives[10][1]=0.97358;
+		objectives[11][0]=0.083678;
+		objectives[11][1]=0.99649;
+		
+
 		//two level line
 		/*
 		objectives[0][0]=0;

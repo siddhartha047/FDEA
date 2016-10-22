@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package jmetal.metaheuritic.FDEAupdated;
+package jmetal.metaheuritic.abc;
 
 /**
  *
@@ -28,7 +28,7 @@ import jmetal.util.JMException;
 import jmetal.util.PseudoRandom;
 import jmetal.util.read_settings;
 
-public class FDEA_Main_Rectangle_Problem {
+public class Zhenan_Main_Rectangle_Problem {
 	public static Logger logger_; // Logger object
 	public static FileHandler fileHandler_; // FileHandler object
 	public static String currentPath;
@@ -79,7 +79,7 @@ public class FDEA_Main_Rectangle_Problem {
 	
 			int M = 4;
 			
-			int populationSize = 288;
+			int populationSize = 286;
 			int GenerationNo = 250;
 	
 		
@@ -89,7 +89,7 @@ public class FDEA_Main_Rectangle_Problem {
 		    Object [] params={"Real",2};
 		    problem = (new ProblemFactory()).getProblem(problemName,params);
 		        			
-			algorithm = new FDEA(problem);
+			algorithm = new zhenan(problem);
 						
 			// Algorithm parameters
 			algorithm.setInputParameter("populationSize", populationSize);
@@ -112,8 +112,8 @@ public class FDEA_Main_Rectangle_Problem {
 			// Selection Operator
 			parameters = null;
 			// TO DO: done
-			//selection = SelectionFactory.getSelectionOperator("BinaryTournament", parameters);
-			selection = SelectionFactory.getSelectionOperator("SidBinaryTournament", parameters);
+			selection = SelectionFactory.getSelectionOperator(
+					"BinaryTournament", parameters);
 	
 			// Add the operators to the algorithm
 			algorithm.addOperator("crossover", crossover);
